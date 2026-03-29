@@ -4,15 +4,18 @@ import Header from './components/Header';
 import Home from './components/Home';
 import Quiz from './components/Quiz';
 import ScoreBoard from './components/ScoreBoard';
+import Login from './components/Login';
+import Leaderboard from './components/Leaderboard';
 import './index.css';
 
 const API_URL = 'http://127.0.0.1:8000';
 
 function App() {
+  const [username, setUsername] = useState(null);
   const [categories, setCategories] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [questions, setQuestions] = useState([]);
-  const [quizState, setQuizState] = useState('home'); // 'home', 'quiz', 'score'
+  const [quizState, setQuizState] = useState('login'); // 'login', 'home', 'quiz', 'score', 'leaderboard'
   const [scoreData, setScoreData] = useState({ score: 0, total: 0 });
 
   useEffect(() => {
@@ -23,6 +26,16 @@ function App() {
     axios.get(`${API_URL}/api/categories`)
       .then(res => setCategories(res.data))
       .catch(err => console.error("Error fetching categories:", err));
+  };
+
+  const handleLogin = (name) => {
+    setUsername(name);
+    setQuizState('home');
+  };
+
+  const handleLogout = () => {
+    setUsername(null);
+    setQuizState('login');
   };
 
   const handleSelectCategory = (categoryId) => {
@@ -39,21 +52,41 @@ function App() {
   const handleFinishQuiz = (score, total) => {
     setScoreData({ score, total });
     setQuizState('score');
+
+    axios.post(`${API_URL}/api/leaderboard`, {
+      username: username,
+      score: score,
+      total: total,
+      topic: currentCategory
+    }).catch(err => console.error("Error posting score:", err));
   };
 
   const handleRestart = () => {
+    if (!username) return;
     setQuizState('home');
     setCurrentCategory(null);
     setQuestions([]);
-    // Refresh categories in case they were updated
     fetchCategories();
+  };
+
+  const handleLeaderboardClick = () => {
+    if (!username) return;
+    setQuizState('leaderboard');
   };
 
   return (
     <>
-      <Header onHomeClick={handleRestart} />
+      <Header 
+        onHomeClick={handleRestart} 
+        onLeaderboardClick={handleLeaderboardClick}
+        username={username}
+        onLogout={handleLogout}
+      />
       
       <main>
+        {quizState === 'login' && (
+          <Login onLogin={handleLogin} />
+        )}
         {quizState === 'home' && (
           <Home 
             categories={categories} 
@@ -72,7 +105,11 @@ function App() {
             score={scoreData.score} 
             total={scoreData.total} 
             onRestart={handleRestart} 
+            onViewLeaderboard={handleLeaderboardClick}
           />
+        )}
+        {quizState === 'leaderboard' && (
+          <Leaderboard />
         )}
       </main>
     </>

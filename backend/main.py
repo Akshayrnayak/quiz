@@ -29,6 +29,15 @@ class QuestionResponse(BaseModel):
     category: str
     questions: List[Question]
 
+class LeaderboardEntry(BaseModel):
+    username: str
+    score: int
+    total: int
+    topic: str
+
+# In-memory leaderboard database
+leaderboard_db: List[LeaderboardEntry] = []
+
 @app.get("/api/categories", response_model=List[Category])
 def fetch_categories():
     categories = get_categories()
@@ -42,3 +51,14 @@ def fetch_questions(category_id: str):
     if not questions:
         raise HTTPException(status_code=404, detail="Category not found or no questions available")
     return {"category": category_id, "questions": questions}
+
+@app.get("/api/leaderboard", response_model=List[LeaderboardEntry])
+def get_leaderboard():
+    # Sort leaderboard by highest score, then by topic for simple sorting
+    sorted_lb = sorted(leaderboard_db, key=lambda x: (x.score / x.total if x.total > 0 else 0), reverse=True)
+    return sorted_lb
+
+@app.post("/api/leaderboard", response_model=LeaderboardEntry)
+def post_leaderboard(entry: LeaderboardEntry):
+    leaderboard_db.append(entry)
+    return entry

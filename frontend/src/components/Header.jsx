@@ -1,15 +1,21 @@
 import React from 'react';
 
-const Header = ({ onHomeClick }) => {
+const Header = ({ onHomeClick, onLeaderboardClick, username, onLogout }) => {
   return (
     <header className="header-container animate-fade-in">
-      <div className="header-content" onClick={onHomeClick} style={{ cursor: 'pointer' }}>
+      <div className="header-content" onClick={username ? onHomeClick : undefined} style={{ cursor: username ? 'pointer' : 'default' }}>
         <div className="logo-icon">&lt;/&gt;</div>
-        <span className="logo-text">W3Quiz Pro</span>
+        <span className="logo-text">W3Quiz Pro Max</span>
       </div>
-      <nav>
-        <button className="nav-btn" onClick={onHomeClick}>Home</button>
-      </nav>
+      
+      {username && (
+        <nav className="header-nav">
+          <span className="user-greeting">Hey, {username}! 👋</span>
+          <button className="nav-btn" onClick={onHomeClick}>Topics</button>
+          <button className="nav-btn" onClick={onLeaderboardClick}>🏅 Leaderboard</button>
+          <button className="nav-btn logout-btn" onClick={onLogout}>Exit</button>
+        </nav>
+      )}
     </header>
   );
 };

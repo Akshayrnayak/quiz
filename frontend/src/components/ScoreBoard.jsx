@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ScoreBoard = ({ score, total, onRestart }) => {
+const ScoreBoard = ({ score, total, onRestart, onViewLeaderboard }) => {
   const percentage = Math.round((score / total) * 100);
   
   let message = "Good effort!";
@@ -21,9 +21,14 @@ const ScoreBoard = ({ score, total, onRestart }) => {
         You scored <strong>{score}</strong> out of <strong>{total}</strong> correctly.
       </div>
 
-      <button className="btn" onClick={onRestart}>
-        Retake Quiz
-      </button>
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <button className="btn" onClick={onRestart}>
+          Retake Quiz
+        </button>
+        <button className="btn" onClick={onViewLeaderboard} style={{ background: 'transparent', border: '1px solid var(--primary-color)' }}>
+          Leaderboard 🏅
+        </button>
+      </div>
     </div>
   );
 };
