@@ -24,6 +24,7 @@ class Question(BaseModel):
     text: str
     options: List[str]
     correct_answer: int
+    explanation: str
 
 class QuestionResponse(BaseModel):
     category: str

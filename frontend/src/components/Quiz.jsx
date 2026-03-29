@@ -5,14 +5,12 @@ const Quiz = ({ questions, category, onFinish }) => {
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60); // 60 seconds per question or total? Let's do 60s per question for intensity
+  const [timeLeft, setTimeLeft] = useState(60);
   
   useEffect(() => {
-    // Timer logic
     if (isAnswered) return;
     
     if (timeLeft <= 0) {
-       // Time's up! Auto-submit
        setIsAnswered(true);
        return;
     }
@@ -52,7 +50,7 @@ const Quiz = ({ questions, category, onFinish }) => {
       setCurrentIndex(prev => prev + 1);
       setSelectedOption(null);
       setIsAnswered(false);
-      setTimeLeft(60); // Reset timer for next question
+      setTimeLeft(60);
     } else {
       onFinish(score, questions.length);
     }
@@ -78,7 +76,7 @@ const Quiz = ({ questions, category, onFinish }) => {
         {question.text}
       </div>
 
-      <div className="options-container">
+      <div className="options-container" style={{ marginBottom: isAnswered ? '1rem' : '0' }}>
         {question.options.map((option, index) => {
           let btnClass = "option-btn";
           if (isAnswered) {
@@ -102,9 +100,28 @@ const Quiz = ({ questions, category, onFinish }) => {
         })}
       </div>
 
+      {isAnswered && question.explanation && (
+        <div className="explanation-card animate-slide-up" style={{
+          background: 'rgba(251, 191, 36, 0.1)',
+          borderLeft: '4px solid #fbbf24',
+          padding: '1.2rem',
+          borderRadius: '0 8px 8px 0',
+          textAlign: 'left',
+          marginBottom: '2rem'
+        }}>
+           <h4 style={{ margin: '0 0 0.5rem 0', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+             Instructor's Note
+            </h4>
+           <p style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-main)', lineHeight: '1.5' }}>
+             {question.explanation}
+           </p>
+        </div>
+      )}
+
       {isAnswered && (
-        <button className="btn animate-fade-in" onClick={nextQuestion}>
-          {currentIndex === questions.length - 1 ? "Finish Quiz" : "Next Question"}
+        <button className="btn animate-fade-in" onClick={nextQuestion} style={{ width: '100%', fontSize: '1.2rem', padding: '1rem' }}>
+          {currentIndex === questions.length - 1 ? "Finish Quiz 🏁" : "Next Question 👉"}
         </button>
       )}
     </div>
