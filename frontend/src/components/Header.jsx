@@ -5,9 +5,9 @@ const Header = ({ onHomeClick, onLeaderboardClick, username, onLogout }) => {
     <header className="header-container animate-fade-in">
       <div className="header-content" onClick={username ? onHomeClick : undefined} style={{ cursor: username ? 'pointer' : 'default' }}>
         <div className="logo-icon">&lt;/&gt;</div>
-        <span className="logo-text">W3Quiz Pro Max</span>
+        <span className="logo-text">Quiz</span>
       </div>
-      
+
       {username && (
         <nav className="header-nav">
           <span className="user-greeting">Hey, {username}! 👋</span>

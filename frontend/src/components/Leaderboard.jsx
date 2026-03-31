@@ -6,7 +6,8 @@ const Leaderboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/leaderboard')
+    const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+    axios.get(`${API_URL}/api/leaderboard`)
       .then(res => {
         setBoard(res.data);
         setLoading(false);

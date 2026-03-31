@@ -8,7 +8,7 @@ import Login from './components/Login';
 import Leaderboard from './components/Leaderboard';
 import './index.css';
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 function App() {
   const [username, setUsername] = useState(null);
@@ -17,15 +17,20 @@ function App() {
   const [questions, setQuestions] = useState([]);
   const [quizState, setQuizState] = useState('login'); // 'login', 'home', 'quiz', 'score', 'leaderboard'
   const [scoreData, setScoreData] = useState({ score: 0, total: 0 });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
   const fetchCategories = () => {
+    setError(null);
     axios.get(`${API_URL}/api/categories`)
       .then(res => setCategories(res.data))
-      .catch(err => console.error("Error fetching categories:", err));
+      .catch(err => {
+        console.error("Error fetching categories:", err);
+        setError(`Failed to connect to the backend (${API_URL}). Please ensure the server is running.`);
+      });
   };
 
   const handleLogin = (name) => {
@@ -91,6 +96,7 @@ function App() {
           <Home 
             categories={categories} 
             onSelectCategory={handleSelectCategory} 
+            error={error}
           />
         )}
         {quizState === 'quiz' && (

@@ -1,12 +1,19 @@
 import React from 'react';
 
-const Home = ({ categories, onSelectCategory }) => {
+const Home = ({ categories, onSelectCategory, error }) => {
   return (
     <div className="glass-card animate-fade-in">
       <h1>Quiz App</h1>
       <p className="subtitle">Test your web development skills just like W3Schools!</p>
       
-      {categories.length === 0 ? (
+      {error ? (
+        <div className="error-message">
+          <p>{error}</p>
+          <p style={{ fontSize: '0.8rem', marginTop: '10px', color: '#ffcccb' }}>
+            Tip: If you've deployed this app, make sure your frontend environment variables (like VITE_API_URL) point to the deployed backend URL, not localhost.
+          </p>
+        </div>
+      ) : categories.length === 0 ? (
         <div className="loader"></div>
       ) : (
         <>
